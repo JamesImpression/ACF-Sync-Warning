@@ -7,44 +7,43 @@ Version:      1.0.0
 
 function acf_sync_warning()
 {
-    // Taken from ACF Pro plugin
-    $groups = acf_get_field_groups();
-
-    // bail early if no field groups
-    if (empty($groups)) return;
-
-
-    // find JSON field groups which have not yet been imported
-    foreach ($groups as $group) {
-
-        // vars
-        $sync = array();
-        $local = acf_maybe_get($group, 'local', false);
-        $modified = acf_maybe_get($group, 'modified', 0);
-        $private = acf_maybe_get($group, 'private', false);
-
-
-        // ignore DB / PHP / private field groups
-        if ($local !== 'json' || $private) {
-
-            // do nothing
-
-        } elseif (!$group['ID']) {
-
-            $sync[$group['key']] = $group;
-
-        } elseif ($modified && $modified > get_post_modified_time('U', true, $group['ID'], true)) {
-
-            $sync[$group['key']] = $group;
-
-        }
-
-    }
-
-    if(empty($sync)) return;
-
     if (defined('WP_ENV')) {
         if (WP_ENV == 'development') {
+            // Taken from ACF Pro plugin
+            $groups = acf_get_field_groups();
+
+            // bail early if no field groups
+            if (empty($groups)) return;
+
+
+            // find JSON field groups which have not yet been imported
+            foreach ($groups as $group) {
+
+                // vars
+                $sync = array();
+                $local = acf_maybe_get($group, 'local', false);
+                $modified = acf_maybe_get($group, 'modified', 0);
+                $private = acf_maybe_get($group, 'private', false);
+
+
+                // ignore DB / PHP / private field groups
+                if ($local !== 'json' || $private) {
+
+                    // do nothing
+
+                } elseif (!$group['ID']) {
+
+                    $sync[$group['key']] = $group;
+
+                } elseif ($modified && $modified > get_post_modified_time('U', true, $group['ID'], true)) {
+
+                    $sync[$group['key']] = $group;
+
+                }
+
+            }
+
+            if(empty($sync)) return;
 
             add_action('admin_notices', function () {
                 echo '<div class="notice notice-error"><p><strong> *** ACF Needs Syncing! *** </strong> <a href="' . site_url() . '/wp-admin/edit.php?post_type=acf-field-group&post_status=sync">Sync here now</a></p></div>';
