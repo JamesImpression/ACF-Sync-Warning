@@ -1,0 +1,9 @@
+{
+    "name": "impression/acf-sync-warning",
+    "description": "Show a warning in development mode to say acf fields need to be synced",
+    "version" : "1.0",
+    "type": "wordpress-plugin",
+    "require": {
+        "php": "^5.5.6 || ^7.0"
+    }
+}
